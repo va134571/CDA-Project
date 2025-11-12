@@ -1,11 +1,57 @@
 #include "spimcore.h"
 
 
-/* ALU */
-/* 10 Points */
-void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
+/* ALU
+Inputs:  A, B, ALUControl
+Outputs: ALUresult, Zero
+Ignore overflows and flags
+*/
+void ALU(unsigned A, unsigned B, char ALUControl,
+         unsigned *ALUresult, char *Zero)
 {
- ALu
+    unsigned Z = 0;
+
+    switch (ALUControl) // Make sure we can use this standard suggestion from VS Code
+    {
+        case 0: // 1 [000]  - ADD
+            Z = A + B;
+            break;
+
+        case 1: // 2 [001] - SUB
+            Z = A - B;
+            break;
+
+        case 2: // 3 [010] - SLT (signed)
+            Z = ((int)A < (int)B) ? 1u : 0u;
+            break;
+
+        case 3: // 4 [011] - SLTU (unsigned)
+            Z = (A < B) ? 1u : 0u;
+            break;
+
+        case 4: // 5 [100] - AND
+            Z = A & B;
+            break;
+
+        case 5: // 6 [101] - OR
+            Z = A | B;
+            break;
+
+        case 6: // 7 [110] - Shift left 16 bits
+            Z = B << 16;
+            break;
+
+        case 7: // 8 [111] - NOT A
+            Z = ~A;
+            break;
+
+        default: // if something weird happens it will break out
+            Z = 0;
+            break;
+    }
+
+    *ALUresult = Z;
+    *Zero = (Z == 0) ? 1 : 0;
 }
 
 /* instruction fetch */
