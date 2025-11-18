@@ -111,7 +111,7 @@ void sign_extend(unsigned offset,unsigned *extended_value)
         *extended_value = offset | 0xFFFF0000; // fill with 1s 
     else
         *extended_value = offset & 0x0000FFFF; // fill with 0s}
-
+}
 /* ALU operations */
 /* 10 Points */
 int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigned funct,char ALUOp,char ALUSrc,unsigned *ALUresult,char *Zero)
