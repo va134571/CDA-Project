@@ -64,7 +64,7 @@ void ALU(unsigned A, unsigned B, char ALUControl,
 /* 10 Points */
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 {
-          if (PC % 4 != 0 || PC / 4 >= MEMSIZE) { // divide by 4 and check for remainder bc in mips everything is in 4 
+    if (PC % 4 != 0 || PC / 4 >= MEMSIZE) { // divide by 4 and check for remainder bc in mips everything is in 4 
         return 1; // return error and stop: unaligned or out of bounds
     }
     *instruction = Mem[PC / 4];
