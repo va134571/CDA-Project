@@ -1,5 +1,11 @@
-#include "spimcore.h"
+/*MySPIM mini processor simulator - draft 
+Name: Gabriela P; Vanessa S
+Date: 11/10/2025*/
 
+#include "spimcore.h" 
+#include "spimcore.c"
+#include <stdio.h>
+#include <stdlib.h>
 
 /* ALU
 Inputs:  A, B, ALUControl
@@ -92,7 +98,8 @@ int instruction_decode(unsigned op,struct_controls *controls)
 /* 5 Points */
 void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigned *data2)
 {
-
+*data1 = Reg[r1]; // finds the value at the register index r1 and assigns to data1
+*data2 = Reg[r2]; // finds the value at the register index r2 and assigns to data2
 }
 
 
@@ -100,14 +107,49 @@ void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigne
 /* 10 Points */
 void sign_extend(unsigned offset,unsigned *extended_value)
 {
-
-}
+    if (offset & 0x8000) // check if the sign bit is 1
+        *extended_value = offset | 0xFFFF0000; // fill with 1s 
+    else
+        *extended_value = offset & 0x0000FFFF; // fill with 0s}
 
 /* ALU operations */
 /* 10 Points */
 int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigned funct,char ALUOp,char ALUSrc,unsigned *ALUresult,char *Zero)
 {
+    unsigned B = (ALUSrc) ? extended_value : data2;
+    char control;
 
+    if (ALUOp == 0) // LW or SW
+        control = 0; // ADD
+    else if (ALUOp == 1) // BEQ
+        control = 1; // SUB
+    else // R-type
+    {
+        switch (funct)
+        {
+            case 32: // ADD
+                control = 0;
+                break;
+            case 34: // SUB
+                control = 1;
+                break;
+            case 36: // AND
+                control = 4;
+                break;
+            case 37: // OR
+                control = 5;
+                break;
+            case 42: // SLT
+                control = 2;
+                break;
+            default:
+                control = 0;
+                break;
+        }
+    }
+
+    ALU(data1, B, control, ALUresult, Zero);
+    return 0;
 }
 
 /* Read / Write Memory */
@@ -131,5 +173,6 @@ void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char 
 {
 
 }
+
 
 
