@@ -58,7 +58,17 @@ void ALU(unsigned A, unsigned B, char ALUControl,
 /* 10 Points */
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 {
+          if (PC % 4 != 0 || PC / 4 >= MEMSIZE) { // divide by 4 and check for remainder bc in mips everything is in 4 
+        return 1; // return error and stop: unaligned or out of bounds
+    }
+    *instruction = Mem[PC / 4];
+    return 0; // works if its a multiple of 4
 
+    
+    if (*instruction == 0x00000000) // this is for "illegal" instructions (not sure we need it)
+        return 1; // Halt
+
+    return 0; // No error occurs
 }
 
 
@@ -121,4 +131,5 @@ void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char 
 {
 
 }
+
 
