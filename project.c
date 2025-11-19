@@ -256,9 +256,25 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
 /* PC update */
 /* 10 Points */
 void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char Zero,unsigned *PC)
-{
+{ 
+    unsigned nextPC = *PC + 4;
 
+    // Branch: PC + 4 + (offset << 2), if Zero is 1
+
+    if (Branch && Zero)
+    {
+        nextPC = nextPC + (extended_value << 2);
+    }
+
+    // Jump: replace low 28 bits of PC+4 with jsec <<2
+
+    if (Jump)
+    {
+        nextPC = (nextPC & 0xF0000000) | (jsec << 2);
+    }
+    *PC = nextPC;
 }
+
 
 
 
