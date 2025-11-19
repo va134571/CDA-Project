@@ -1,5 +1,6 @@
 /*MySPIM mini processor simulator - draft 
 Name: Gabriela P; Vanessa S
+Project Group: 6
 Date: 11/10/2025*/
 
 #include "spimcore.h" 
