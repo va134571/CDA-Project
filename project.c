@@ -95,9 +95,89 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
 
 /* instruction decode */
 /* 15 Points */
-int instruction_decode(unsigned op,struct_controls *controls)
+int instruction_decode(unsigned op, struct_controls *controls)
 {
+    controls->RegDst = 2;
+    controls->Jump = 0;
+    controls->Branch = 0;
+    controls->MemRead = 0;
+    controls->MemtoReg = 2;
+    controls->ALUOp = 0;
+    controls->MemWrite = 0;
+    controls->ALUSrc = 0;
+    controls->RegWrite = 0;
 
+    // R-Type: op = 0
+    if (op == 0) {
+        controls->RegDst = 1; // write to rd (r3)
+        controls->RegWrite = 1;
+        controls->ALUSrc = 0;
+        controls->ALUOp = 7; // R-Type -> ALU control depends on function
+        return 0;
+    }
+
+    // LW: op = 35
+    if (op == 35) {
+        controls->RegDst = 0; // write to rt (r2)
+        controls->MemRead = 1;
+        controls->MemtoReg = 1;
+        controls->ALUSrc = 1;
+        controls->RegWrite = 1;
+        controls->ALUOp = 0; // addition for address
+        return 0;
+    }
+
+    // SW: op = 43
+    if (op == 43) {
+        controls->MemWrite = 1;
+        controls->ALUSrc = 1;
+        controls->ALUOp = 0;
+        return 0;
+    }
+
+    // BEQ (op = 4)
+    if (op == 4) {
+        controls->Branch = 1;
+        controls->ALUSrc = 0;
+        controls->ALUOp = 0;
+        return 0;
+    }
+
+    // J: op = 2
+    if (op == 2) {
+        controls->Jump = 1;
+        return 0;
+    }
+
+    // ADDI: op = 8
+    if (op == 8) {
+        controls->RegDst = 0;
+        controls->RegWrite = 1;
+        controls->ALUSrc = 1;
+        controls->ALUop = 0;
+        return 0;
+    }
+
+    // ORI: op = 13
+    if (op == 13) {
+        controls->RegDst = 0;
+        controls->RegWrite = 1;
+        controls->ALUSrc = 1;
+        controls->ALUOp = 5; // OR
+        return 0;
+    }
+
+    // LUI: op = 15
+    if (op == 15) {
+        controls->RegDst = 0;
+        controls->RegWrite = 1;
+        controls->ALUSrc = 1;
+        controls->ALUOp = 6; // shift left 16 bits
+        return 0; 
+    }
+
+    // If opcode is not recognized, halt the simulation
+    return 1;
 }
 
 /* Read Register */
