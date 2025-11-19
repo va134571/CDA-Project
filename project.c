@@ -3,6 +3,8 @@ Name: Gabriela P; Vanessa S
 Project Group: 6
 Date: 11/10/2025*/
 
+/*Mike is special (today)*/
+
 #include "spimcore.h" 
 #include "spimcore.c"
 #include <stdio.h>
