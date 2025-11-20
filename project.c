@@ -245,7 +245,23 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
 /* 10 Points */
 int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsigned *memdata,unsigned *Mem)
 {
+    // Checks for alignment
+    if (ALUresult % 4 != 0)
+        return 1; // halt: address must be word-aligned
 
+    // Checks for bounds
+    if (ALUresult >> 2 >= MEMSIZE)
+        return 1; // If instruction tries to access memory outside 0-0xFFFF, it stops
+
+    // Handles memory READ (lw)
+    if (MemRead == 1)
+        *memdata = Mem[ALUresult >> 2];
+
+    // Handles memory WRITE (sw)
+    if (MemWrite == 1)
+        Mem[ALUresult >> 2] = data2;
+
+    return 0; // no halt conditions
 }
 
 
@@ -253,7 +269,28 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
 /* 10 Points */
 void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,char RegWrite,char RegDst,char MemtoReg,unsigned *Reg)
 {
+    if (RegWrite == 0)
+        return; // Doesn't write sw, beq, j
+    
+    // Chooses value to write (ALU output or memory data)
+    unsigned value;
 
+    if (MemtoReg == 1)
+        value = memdata; // comes from memory (lw)
+    else
+        value = ALUresult; // R-type, addi, ori, lui
+
+    // Chooses destination register
+    unsigned regNum;
+
+    if (RegDst == 1)
+        regNum = r3; // R-type -> rd
+    else
+        regNum = r2; // I-type and lw -> rt
+
+    // Writes value into register file
+    Reg[regNum] = value;
+    
 }
 
 /* PC update */
